@@ -23,7 +23,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: transparent; /* FIXED */
+            background: transparent;
             padding: 20px;
             text-align: center;
         }
@@ -112,6 +112,13 @@ function loadWeather() {
 }
 
 loadWeather();
+</script>
+
+<!-- ⭐ AUTO REFRESH EVERY 5 SECONDS ⭐ -->
+<script>
+    setInterval(() => {
+        location.reload();
+    }, 5000);
 </script>
 
 </body>
