@@ -2,8 +2,6 @@
 <html>
 <head>
     <title>Weather</title>
-
-    <!-- Futuristic Orbitron Font -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
@@ -15,8 +13,6 @@
             flex-direction: column;
             transition: background 0.3s ease;
         }
-
-        /* TOP IS NOW TRANSPARENT SO BACKGROUND SHOWS */
         #top {
             flex: 1;
             display: flex;
@@ -27,7 +23,6 @@
             padding: 20px;
             text-align: center;
         }
-
         #bottom {
             flex: 1;
             background: black;
@@ -36,31 +31,15 @@
             align-items: center;
             overflow: hidden;
         }
-
         #photo {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: none;
         }
-
-        #city {
-            font-size: 34px;
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
-
-        #temp {
-            font-size: 26px;
-            font-weight: 700;
-            margin-top: 10px;
-        }
-
-        #wind, #cond {
-            font-size: 18px;
-            opacity: 0.85;
-            letter-spacing: 1px;
-        }
+        #city { font-size: 34px; font-weight: 700; }
+        #temp { font-size: 26px; font-weight: 700; margin-top: 10px; }
+        #wind, #cond { font-size: 18px; opacity: 0.85; }
     </style>
 </head>
 <body>
@@ -77,48 +56,44 @@
 </div>
 
 <script>
+const BIN_URL = "https://api.jsonbin.io/v3/b/6a25a396f5f4af5e29c71fef/latest";
+
 function loadWeather() {
-    const data = JSON.parse(localStorage.getItem("weatherData"));
+    fetch(BIN_URL)
+        .then(r => r.json())
+        .then(json => {
+            const data = json.record;
 
-    if (!data) {
-        document.getElementById("city").innerText = "No data set";
-        return;
-    }
+            document.getElementById("city").innerText = data.city || "No data set";
+            document.getElementById("temp").innerText = "Temperature: " + data.temperature;
+            document.getElementById("wind").innerText = "Wind: " + data.wind;
+            document.getElementById("cond").innerText = "Condition: " + data.condition;
 
-    document.getElementById("city").innerText = data.city;
-    document.getElementById("temp").innerText = "Temperature: " + data.temperature;
-    document.getElementById("wind").innerText = "Wind: " + data.wind;
-    document.getElementById("cond").innerText = "Condition: " + data.condition;
+            const colors = {
+                yellow: "#ffe066",
+                blue: "#4da3ff",
+                darkblue: "#003366",
+                red: "#ff4d4d",
+                darkred: "#660000"
+            };
 
-    // Background color from admin
-    if (data.bg) {
-        const colors = {
-            yellow: "#ffe066",
-            blue: "#4da3ff",
-            darkblue: "#003366",
-            red: "#ff4d4d",
-            darkred: "#660000"
-        };
+            if (data.bg) {
+                document.body.style.background = colors[data.bg];
+            }
 
-        document.body.style.background = colors[data.bg];
-    }
-
-    // Photo
-    if (data.photo) {
-        const img = document.getElementById("photo");
-        img.src = data.photo;
-        img.style.display = "block";
-    }
+            if (data.photo) {
+                const img = document.getElementById("photo");
+                img.src = data.photo;
+                img.style.display = "block";
+            }
+        });
 }
 
 loadWeather();
 </script>
 
-<!-- ⭐ AUTO REFRESH EVERY 5 SECONDS ⭐ -->
 <script>
-    setInterval(() => {
-        location.reload();
-    }, 5000);
+setInterval(() => location.reload(), 5000);
 </script>
 
 </body>
